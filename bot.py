@@ -14,7 +14,8 @@ import openai
 from dotenv import load_dotenv
 
 is_debug = False
-max_page_size = 5
+max_page_size = 15
+
 
 
 def log_send_function(func: Callable[[Update, CallbackContext], Message] = None, print_log_to_chat: bool = True):
@@ -312,6 +313,7 @@ def get_current_context_messages(user: User, count: int = 0) -> list[dict[str, s
         return cursor.fetchall()
 
 
+
 def get_contexts_markup(user: User, current_page: int = 0) -> InlineKeyboardMarkup:
     buttons = []
     user_contexts = get_user_contexts(user)
@@ -486,7 +488,8 @@ async def message(update: Update, context: CallbackContext) -> Message:
             #transcript = await openai.Audio.atranscribe("whisper-1", mp3_file)
            # prompt = transcript['text']
     append_current_context(user, prompt, 'user')
-    messages = get_current_context_messages(user)
+    messages = messages = get_current_context_messages(user, count=15)
+
 
     completion = await openai.ChatCompletion.acreate(
         model="gpt-3.5-turbo",
@@ -527,7 +530,7 @@ async def message(update: Update, context: CallbackContext) -> Message:
 
 if __name__ == "__main__":
     load_dotenv()
-    openai.api_key = "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"
+    openai.api_key = "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"
     debug = False
 
     global conn
